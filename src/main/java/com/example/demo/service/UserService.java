@@ -9,13 +9,25 @@ import java.util.List;
 @Service
 public class UserService {
     List<User> users = new ArrayList<>(List.of(
-            new User(1, "pepito", "pepito@gmail.com"),
-            new User(2, "juan", "juan@gmail.com"),
-            new User(3, "maria", "maria@gmail.com")
+            new User(1, "pepito", "pepito@gmail.com", 6),
+            new User(2, "juan", "juan@gmail.com", 28),
+            new User(3, "maria", "maria@gmail.com", 60)
     ));
 
-    public List<User> getListUsers() {
-        return users;
+    public List<User> getListUsers(Integer minAge) {
+        if (minAge == null) {
+            return users;
+        }
+
+        List<User> filteredUsers = new ArrayList<>();
+
+            for (User u : users){
+            if (u.getAge() >= minAge) {
+                filteredUsers.add(u);
+            }
+            }
+
+        return filteredUsers;
     }
 
     public User getUserById(long id) {

@@ -16,12 +16,14 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getListUsers();
+    public List<User> getAllUsers(@RequestParam(required = false) Integer minAge) {
+
+        return userService.getListUsers(minAge);
+
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable long id) {
+    public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
@@ -31,12 +33,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable long id, @RequestBody User user) {
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable long id) {
+    public boolean deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id);
     }
+
+
 }
