@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,30 +19,42 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers(@RequestParam(required = false) Integer minAge) {
-
-        return userService.getListUsers(minAge);
-
+    public ResponseEntity <List<UserDTO>> getAllUsers(@RequestParam(required = false) Integer minAge) {
+        List<UserDTO> users = userService.getListUsers(minAge);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity <UserDTO> getUserById(@PathVariable Long id) {
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO==null) {
+        return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity <UserDTO> createUser(@RequestBody User user) {
+        URI location = URI.create("/api/users" + user.getId());
+        return ResponseEntity.created(location).body(userService.createUser(user));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity <UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
+        UserDTO updateUserDTO = userService.updateUser(id,user);
+        if (updateUserDTO == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updateUserDTO);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean delete = userService.deleteUser(id);
+        if (!delete){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
 

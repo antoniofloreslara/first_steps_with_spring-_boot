@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -14,43 +15,43 @@ public class UserService {
             new User(3, "maria", "maria@gmail.com", 60)
     ));
 
-    public List<User> getListUsers(Integer minAge) {
-        if (minAge == null) {
-            return users;
+    public List<UserDTO> getListUsers(Integer minAge) {
+        List<UserDTO> filteredUsers = new ArrayList<>();
+
+        for (User u : users) {
+            if (minAge == null || u.getAge() >= minAge) {
+                filteredUsers.add(new UserDTO(u.getName(), u.getEmail()));
+            }
         }
-
-        List<User> filteredUsers = new ArrayList<>();
-
-            for (User u : users){
-            if (u.getAge() >= minAge) {
-                filteredUsers.add(u);
-            }
-            }
 
         return filteredUsers;
     }
 
-    public User getUserById(long id) {
+    public UserDTO getUserById(long id) {
+
         for (User u : users) {
             if (u.getId() == id) {
-                return u;
+
+                return new UserDTO(u.getName(),u.getEmail());
             }
         }
         return null;
     }
 
-    public User createUser(User user) {
+    public UserDTO createUser(User user) {
         users.add(user);
-        return user;
+        UserDTO createUserDTO= new UserDTO(user.getName(),user.getEmail());
+
+        return new UserDTO(user.getName(),user.getEmail());
     }
 
-    public User updateUser(long id, User updatedUser) {
+    public UserDTO updateUser(long id, User updatedUser) {
         for (User u : users) {
             if (u.getId() == id) {
                 u.setName(updatedUser.getName());
                 u.setEmail(updatedUser.getEmail());
             }
-            return u;
+            return new UserDTO(u.getName(),u.getEmail());
         }
         return null;
     }
@@ -64,5 +65,4 @@ public class UserService {
         }
         return false;
     }
-
 }

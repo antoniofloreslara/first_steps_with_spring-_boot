@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ProductDTO;
 import com.example.demo.entity.Product;
 import org.springframework.stereotype.Service;
 
@@ -51,51 +52,56 @@ public class ProductServices {
     ));
 
 
-    public List<Product> getListProduct() {
-        return products;
+    public List<ProductDTO> getListProduct() {
+        List<ProductDTO> allproduct = new ArrayList<>();
+        for(Product p: products){
+            allproduct.add(new ProductDTO( p.getType(),p.getName(), p.getColor(),p.getSize()));
+        }
+        return allproduct;
     }
 
 
-    public Product getProductById(Long id) {
-        for (Product p : products) {
-            if (p.getId().equals(id))
+
+    public ProductDTO getProductById(Long id) {
+
+       Product p= getProductByIdFromProduct(id);
+       if (p!= null) {
+           return new ProductDTO(p.getType(), p.getName(), p.getColor(), p.getSize());
+       }
+       return null;
+    }
+private Product getProductByIdFromProduct(Long id){
+        for (Product p: products){
+            if (p.getId().equals(id)){
                 return p;
+            }
+
         }
         return null;
-    }
+}
 
-
-    public Product crerateProduct (Product product) {
+    public ProductDTO createProduct (Product product) {
         products.add(product);
-        return product;
+        return new ProductDTO(product.getType(),product.getName(), product.getColor(),product.getSize());
     }
 
 
-    public Product updateProduct(Long id, Product productAlreadyChange) {
+    public ProductDTO updateProduct(Long id, ProductDTO dtoCHanges) {
         for (Product p : products) {
             if (p.getId().equals(id)) {
-                if (productAlreadyChange.getName() != null) {
-                    p.setName(productAlreadyChange.getName());
+                if (dtoCHanges.getName() != null) {
+                    p.setName(dtoCHanges.getName());
                 }
-                if (productAlreadyChange.getType() != null) {
-                    p.setType(productAlreadyChange.getType());
+                if (dtoCHanges.getType() != null) {
+                    p.setType(dtoCHanges.getType());
                 }
-                if (productAlreadyChange.getColor() != null) {
-                    p.setColor(productAlreadyChange.getColor());
+                if (dtoCHanges.getColor() != null) {
+                    p.setColor(dtoCHanges.getColor());
                 }
-                if (productAlreadyChange.getManufacturer() != null) {
-                    p.setManufacturer(productAlreadyChange.getManufacturer());
+                if (dtoCHanges.getSize() != null) {
+                    p.setSize(dtoCHanges.getSize());
                 }
-                if (productAlreadyChange.getStock() != null) {
-                    p.setStock(productAlreadyChange.getStock());
-                }
-                if (productAlreadyChange.getMaterial() != null) {
-                    p.setMaterial(productAlreadyChange.getMaterial());
-                }
-                if (productAlreadyChange.getSize() != null) {
-                    p.setSize(productAlreadyChange.getSize());
-                }
-                return p;
+                return new ProductDTO(p.getType(),p.getName(), p.getColor(),p.getSize());
             }
         }
         return null;
